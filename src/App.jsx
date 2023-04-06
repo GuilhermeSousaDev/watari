@@ -1,31 +1,14 @@
-import { useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import './App.css';
-import { useEffect } from 'react';
 import { api } from './services/api';
-
-const textstyle = {
-  play: {
-    hover: {
-      backgroundColor: 'black',
-      color: 'white'
-    },
-    button: {
-      padding: '4',
-      fontFamily: 'Helvetica',
-      fontSize: '1.0em',
-      cursor: 'pointer',
-      pointerEvents: 'none',
-      outline: 'none',
-      backgroundColor: 'inherit',
-      border: 'none'
-    },
-  }
-}
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import SendIcon from '@mui/icons-material/Send';
+import MicButton from './components/MicButton';
+import { Button } from '@mui/material';
 
 function App() {
-  const [text, setText] = useState(null);
-
   const {
     browserSupportsSpeechRecognition,
     listening,
@@ -37,40 +20,58 @@ function App() {
     return <span>Your Browser not Suport this API</span>
   }
 
+  const handleListeningAudio = () => {
+    if (!listening) {
+      SpeechRecognition.startListening();
+    } else {
+      SpeechRecognition.stopListening();
+    }
+  }
+
   const sendRequestToChatGPT = async () => {
     if (transcript) {
       const { data } = await api.post('completions', {
-        prompt: transcript,
+        prompt: `${transcript}, Resuma tudo em até 200 palavras ou menos`,
         model: "text-davinci-003",
-        max_tokens: 100,
-        temperature: 0,
+        max_tokens: 200,
+        temperature: 0.5,
       });
 
-      setText(data.choices[0].text.trim());
+      startSpeakText(data.choices[0].text.trim());
       resetTranscript();
     }
   }
 
-  const startSpeakText = () => {
-    if (text) {
-      const synth = window.speechSynthesis;
-      const voices = synth.getVoices();
-      const toSpeak = new SpeechSynthesisUtterance();
-      toSpeak.voice = voices[0];
-      toSpeak.text = text.replace(/\n/g, '');
-      toSpeak.lang = 'pt-BR';
+  const startSpeakText = (textToSay) => {
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+    const toSpeak = new SpeechSynthesisUtterance();
+    toSpeak.voice = voices[0];
+    toSpeak.text = textToSay.replace(/\n/g, '');
+    toSpeak.lang = 'pt-BR';
 
-      synth.speak(toSpeak);
-    }
+    synth.speak(toSpeak);
   }
 
   return (
-    <div className="App">
-      <span>Microphone: {listening ? 'On' : 'Off'}</span>
-      <button onClick={SpeechRecognition.startListening}>Start</button>
-      { transcript && <button onClick={sendRequestToChatGPT}>Request to ChatGPT</button> }
-      { text && <button onClick={startSpeakText}>Speak Text</button> }
-    </div>
+    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+      <Typography>{transcript}</Typography> <br />
+
+      <MicButton
+        listening={listening}
+        onClick={handleListeningAudio}
+      />
+
+      {transcript &&
+        <Button
+          variant="contained"
+          endIcon={<SendIcon />}
+          onClick={sendRequestToChatGPT}
+          sx={{ mt: 5 }}
+        >
+          Send
+        </Button>}
+    </Box>
   )
 }
 
