@@ -1,13 +1,16 @@
+import { useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { api } from './services/api';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import SendIcon from '@mui/icons-material/Send';
+import LoadingButton from '@mui/lab/LoadingButton';
 import MicButton from './components/MicButton';
-import { Button } from '@mui/material';
 import Navbar from './components/Navbar';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     browserSupportsSpeechRecognition,
     listening,
@@ -29,10 +32,11 @@ function App() {
 
   const sendRequestToChatGPT = async () => {
     if (transcript) {
+      setIsLoading(true);
       const { data } = await api.post('completions', {
-        prompt: `${transcript}, Resuma tudo em até 200 palavras ou menos`,
+        prompt: transcript,
         model: "text-davinci-003",
-        max_tokens: 200,
+        max_tokens: 2048,
         temperature: 0.5,
       });
 
@@ -50,36 +54,37 @@ function App() {
     toSpeak.lang = 'pt-BR';
 
     synth.speak(toSpeak);
+    setIsLoading(false);
   }
 
   return (
     <Box>
       <Navbar />
-      <Box 
-        display="flex" 
-        flexDirection="column" 
+      <Box
+        display="flex"
+        flexDirection="column"
         justifyContent="center"
-        alignItems="center" 
+        alignItems="center"
         sx={{ height: 540 }}
       >
-      <Typography>{transcript}</Typography> <br />
+        <Typography>{transcript}</Typography> <br />
 
-      <MicButton
-        listening={listening}
-        onClick={handleListeningAudio}
-      />
+        <MicButton
+          listening={listening}
+          onClick={handleListeningAudio}
+        />
 
-      {transcript &&
-        <Button
-          variant="contained"
-          color="inherit"
-          endIcon={<SendIcon />}
-          onClick={sendRequestToChatGPT}
-          sx={{ mt: 5 }}
-        >
-          Send
-        </Button>
-      }
+        {transcript &&
+          <LoadingButton
+            onClick={sendRequestToChatGPT}
+            loading={isLoading}
+            loadingPosition="end"
+            endIcon={<SendIcon />}
+            variant="contained"
+          >
+            Enviar
+          </LoadingButton>
+        }
       </Box>
     </Box>
   )

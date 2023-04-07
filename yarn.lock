@@ -419,6 +419,20 @@
   dependencies:
     "@babel/runtime" "^7.21.0"
 
+"@mui/lab@^5.0.0-alpha.125":
+  "integrity" "sha512-lL4heZcBB5HLsLe0ZSC8nXcdWUfz49A2XeZqffxmlPxSFdJHFZujtAZF5AxmesuUSfcsbAWxD7zhtr8a3Yg+6w=="
+  "resolved" "https://registry.npmjs.org/@mui/lab/-/lab-5.0.0-alpha.125.tgz"
+  "version" "5.0.0-alpha.125"
+  dependencies:
+    "@babel/runtime" "^7.21.0"
+    "@mui/base" "5.0.0-alpha.124"
+    "@mui/system" "^5.11.16"
+    "@mui/types" "^7.2.3"
+    "@mui/utils" "^5.11.13"
+    "clsx" "^1.2.1"
+    "prop-types" "^15.8.1"
+    "react-is" "^18.2.0"
+
 "@mui/material@^5.0.0", "@mui/material@^5.11.16":
   "integrity" "sha512-++glQqbZ3rMzOWB77yOvqRG+k8+scYTUKVWZpWff+GWsf6L10g9L2wgRhhAS8bDLuxCbXZlPNbSZowXDDw6z6Q=="
   "resolved" "https://registry.npmjs.org/@mui/material/-/material-5.11.16.tgz"
