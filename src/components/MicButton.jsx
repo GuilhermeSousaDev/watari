@@ -1,7 +1,6 @@
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import MicIcon from "@mui/icons-material/Mic";
-import MicOffIcon from "@mui/icons-material/MicOff";
 
 export default function MicButton({ listening, onClick }) {
     return (
@@ -11,10 +10,14 @@ export default function MicButton({ listening, onClick }) {
             onClick={onClick}
         >
             {listening ?
-                <MicIcon fontSize='large' />
-                : <MicOffIcon fontSize='medium' />
+                <MicIcon fontSize='large' color="error" />
+                : <MicIcon fontSize='large' color="disabled" />
             }
-            <Typography>{listening ? 'Ouvindo...' : ''}</Typography>
+            <Typography 
+                color={ listening ? "error" : "gray" }
+            >
+                {listening ? 'Ouvindo...' : 'Toque Para Falar'}
+            </Typography>
         </IconButton>
     )
 }

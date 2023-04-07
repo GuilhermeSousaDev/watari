@@ -1,12 +1,11 @@
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import './App.css';
 import { api } from './services/api';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import SendIcon from '@mui/icons-material/Send';
 import MicButton from './components/MicButton';
 import { Button } from '@mui/material';
+import Navbar from './components/Navbar';
 
 function App() {
   const {
@@ -54,7 +53,15 @@ function App() {
   }
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+    <Box>
+      <Navbar />
+      <Box 
+        display="flex" 
+        flexDirection="column" 
+        justifyContent="center"
+        alignItems="center" 
+        sx={{ height: 540 }}
+      >
       <Typography>{transcript}</Typography> <br />
 
       <MicButton
@@ -65,12 +72,15 @@ function App() {
       {transcript &&
         <Button
           variant="contained"
+          color="inherit"
           endIcon={<SendIcon />}
           onClick={sendRequestToChatGPT}
           sx={{ mt: 5 }}
         >
           Send
-        </Button>}
+        </Button>
+      }
+      </Box>
     </Box>
   )
 }
