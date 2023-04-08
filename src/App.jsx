@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { api } from './services/api';
 import Box from '@mui/material/Box';
@@ -10,7 +10,7 @@ import Navbar from './components/Navbar';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-  const [speakConfig, setSpeakConfig] = useState();
+  const [speakConfig, setSpeakConfig] = useState(null);
 
   const {
     browserSupportsSpeechRecognition,
@@ -37,7 +37,7 @@ function App() {
       const { data } = await api.post('completions', {
         prompt: transcript,
         model: "text-davinci-003",
-        max_tokens: 2048,
+        max_tokens: 400,
         temperature: 0.5,
       });
 
@@ -52,10 +52,12 @@ function App() {
     const toSpeak = new SpeechSynthesisUtterance();
     toSpeak.voice = speakConfig ? speakConfig : voices[0];
     toSpeak.text = textToSay.replace(/\n/g, '');
-    toSpeak.lang = speakConfig.lang;
 
     synth.speak(toSpeak);
-    setIsLoading(false);
+    
+    if (synth.speaking) {
+      setIsLoading(false);
+    }
   }
 
   return (

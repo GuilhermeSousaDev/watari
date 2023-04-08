@@ -50,6 +50,7 @@ export default function Navbar({ setSpeakConfig }) {
           { voices.map((voice, index) => (
             <>
               <Button 
+                key={index}
                 variant={ selectedIndex === index ? "contained" : "default" }
                 sx={{ mt: 2 }}
                 onClick={() => handleSelectAndTestVoice(index, voice)}
