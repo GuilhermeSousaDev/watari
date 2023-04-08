@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { api } from './services/api';
 import Box from '@mui/material/Box';
@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
+  const [speakConfig, setSpeakConfig] = useState();
 
   const {
     browserSupportsSpeechRecognition,
@@ -49,9 +50,9 @@ function App() {
     const synth = window.speechSynthesis;
     const voices = synth.getVoices();
     const toSpeak = new SpeechSynthesisUtterance();
-    toSpeak.voice = voices[0];
+    toSpeak.voice = speakConfig ? speakConfig : voices[0];
     toSpeak.text = textToSay.replace(/\n/g, '');
-    toSpeak.lang = 'pt-BR';
+    toSpeak.lang = speakConfig.lang;
 
     synth.speak(toSpeak);
     setIsLoading(false);
@@ -59,7 +60,7 @@ function App() {
 
   return (
     <Box>
-      <Navbar />
+      <Navbar setSpeakConfig={setSpeakConfig} />
       <Box
         display="flex"
         flexDirection="column"

@@ -22,7 +22,7 @@ const style = {
   p: 2,
 };
 
-export default function Navbar() {
+export default function Navbar({ setSpeakConfig }) {
   const synth = window.speechSynthesis;
   const voices = synth.getVoices();
 
@@ -37,6 +37,7 @@ export default function Navbar() {
 
     synth.speak(toSpeak);
     setSelectedIndex(index);
+    setSpeakConfig(voice);
   }
 
   return (
